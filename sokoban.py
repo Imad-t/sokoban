@@ -1,12 +1,14 @@
+from enum import Enum
+
 class Puzzle:
-
-    self.entity.types = ["wall","void","box","target","player"]
-    self.state = [][]
-    self.actions = ["up","down","left","right"]
-    self.entities = []
-
-    def __init__(self, state:tuple<(str)[][]>, entities:tuple<(str,(int,int))>):
+    def __init__(self):
+        self.state = [][]
+        self.actions = ["up","down","left","right"]
+        self.entities = []
         pass
+
+    
+
     def setBoard():
         pass
     def setEntities():
