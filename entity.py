@@ -1,8 +1,8 @@
-from .game.types import Position2d, EntityType
+from game.types import Position2d, EntityType
 
 class Entity:
     def __init__(self,
                  pos: Position2d = (0, 0),
-                 type: EntityType = 'void'
+                 type: EntityType = EntityType.VOID,
                 ):
         pass
