@@ -1,3 +1,6 @@
+from turtle import down
+
+
 class SokobanPuzzle:
     def __init__(self, grid):
         self.grid = grid  
@@ -39,6 +42,28 @@ class SokobanPuzzle:
                 if self.grid[row][col] == 'B':
                     return False
         return True
+    
+    def isDeadLock(self):
+        # for each box check if adjacent positions
+        # to a box of transform vectors that are not adjacent is a wall
+        # (ex. (box + UP) = wall AND (box + left = wall))
+        UP= (-1, 0)
+        DOWN= (1, 0)
+        LEFT= (0, -1)
+        RIGHT= (0, 1)
+        for box in self.boxes:
+            top = box + UP
+            bottom = box + DOWN
+            left = box + LEFT
+            right = box + RIGHT
+            if (
+                (self.grid[top[0]][top[1]]=='O' and self.grid[right[0]][right[1]]=='O')
+                or (self.grid[bottom[0]][bottom[1]]=='O' and self.grid[right[0]][right[1]]=='O')
+                or (self.grid[bottom[0]][bottom[1]]=='O' and self.grid[left[0]][left[1]]=='O')
+                or (self.grid[top[0]][top[1]]=='O' and self.grid[left[0]][left[1]]=='O')
+            ):
+                return True
+        return False
 
 
     def successorFunction(self):

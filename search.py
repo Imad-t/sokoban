@@ -20,15 +20,16 @@ def bfs(initial_state):
             print(f"Number of steps taken: {steps}")
 
             return current_node.getPath(), current_node.getSolution()
-
-        #generate successor states
-        for action, successor_state in current_node.state.successorFunction():
-            state_id = (successor_state.player_pos, tuple(successor_state.boxes))
-            if state_id not in visited:
-                visited.add(state_id)
-                successor_node = Node(successor_state, parent=current_node, action=action)
-                queue.append(successor_node)
-                print(f"Action: {action}, New Player Position: {successor_state.player_pos}, Boxes: {successor_state.boxes}")
+        
+        if not current_node.state.isDeadLock():
+            #generate successor states
+            for action, successor_state in current_node.state.successorFunction():
+                state_id = (successor_state.player_pos, tuple(successor_state.boxes))
+                if state_id not in visited:
+                    visited.add(state_id)
+                    successor_node = Node(successor_state, parent=current_node, action=action)
+                    queue.append(successor_node)
+                    print(f"Action: {action}, New Player Position: {successor_state.player_pos}, Boxes: {successor_state.boxes}")
 
     print("No solution found.")
     return None, None

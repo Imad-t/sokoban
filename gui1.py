@@ -69,7 +69,7 @@ def draw_grid(state, screen):
 def run_game():
     global current_player_image  #allow modification of the image orientation
     pygame.init()
-    initial_state = SokobanPuzzle(levels[3])
+    initial_state = SokobanPuzzle(levels[4])
     screen = pygame.display.set_mode((len(levels[3][0]) * CELL_SIZE, len(levels[3]) * CELL_SIZE))
     pygame.display.set_caption("Sokoban")
 
