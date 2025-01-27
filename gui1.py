@@ -69,13 +69,13 @@ def draw_grid(state, screen):
 def run_game():
     global current_player_image  #allow modification of the image orientation
     pygame.init()
-    initial_state = SokobanPuzzle(levels[4])
-    screen = pygame.display.set_mode((len(levels[3][0]) * CELL_SIZE, len(levels[3]) * CELL_SIZE))
+    initial_state = SokobanPuzzle(levels[7])
+    screen = pygame.display.set_mode((len(levels[7][0]) * CELL_SIZE, len(levels[7]) * CELL_SIZE))
     pygame.display.set_caption("Sokoban")
 
     #run A* to find the solution path
-    #solution_path, actions = bfs(initial_state)
-    solution_path, actions = a_star(initial_state,"3")
+    # solution_path, actions = bfs(initial_state)
+    solution_path, actions = a_star(initial_state,"2")
     if solution_path is None:
         print("No solution found!")
         return
@@ -120,7 +120,7 @@ def run_game():
 
             draw_grid(current_state, screen)
             pygame.display.flip()
-            pygame.time.delay(1000)
+            pygame.time.delay(1000) 
             
             current_position_index += 1
         else:

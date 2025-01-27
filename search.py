@@ -6,8 +6,8 @@ def bfs(initial_state):
     initial_node = Node(initial_state)
     queue.append(initial_node)
     
-    visited = set()
-    visited.add((initial_state.player_pos, tuple(initial_state.boxes)))
+    closed = set()
+    closed.add((initial_state.player_pos, tuple(initial_state.boxes)))
 
     steps=0
     while queue:
@@ -95,50 +95,59 @@ def h3(state):
     #combine target distance, push cost, and clustering penalty
     return distance_to_target + push_cost + clustering_penalty
 
-def a_star(initial_state,heuristic):
+def a_star(initial_state, heuristic):
     open_list = []
+    open_dict = {}  #stores nodes with state as key for quick access
+    closed_dict = {}  #stores visited nodes with their lowest f cost
+
     initial_node = Node(initial_state)
-    initial_node.g = 0  #path cost
-    #f = g + h
-    if heuristic == 1:
-        initial_node.f = initial_node.g + h1(initial_state)  
-    elif heuristic == 2:
+    initial_node.g = 0
+    if heuristic == "1":
+        initial_node.f = initial_node.g + h1(initial_state)
+    elif heuristic == "2":
         initial_node.f = initial_node.g + h2(initial_state)
-    elif heuristic == 3:
+    elif heuristic == "3":
         initial_node.f = initial_node.g + h3(initial_state)
 
     heappush(open_list, (initial_node.f, id(initial_node), initial_node))
-    
-    visited = set()
-    visited.add((initial_state.player_pos, tuple(initial_state.boxes)))
+    open_dict[(initial_state.player_pos, tuple(initial_state.boxes))] = initial_node
 
     steps = 0
     while open_list:
         steps += 1
         current_f, _, current_node = heappop(open_list)
+        current_state_id = (current_node.state.player_pos, tuple(current_node.state.boxes))
 
-        #check if we have reached the goal state
+        if current_state_id in closed_dict:
+            continue  #skip if already processed with a lower f cost
+
         if current_node.state.isGoal():
             print("Goal state reached!")
             print(f"Number of steps taken: {steps}")
             return current_node.getPath(), current_node.getSolution()
 
-        #generate successor states
+        closed_dict[current_state_id] = current_node
+
         for action, successor_state in current_node.state.successorFunction():
-            state_id = (successor_state.player_pos, tuple(successor_state.boxes))
-            if state_id not in visited:
-                successor_node = Node(successor_state, parent=current_node, action=action)
-                successor_node.g = current_node.g + 1  #increment path cost
-                #f = g + h
-                if heuristic == "1":
-                    successor_node.f = successor_node.g + h1(successor_state)  
-                elif heuristic == "2":
-                    successor_node.f = successor_node.g + h2(successor_state)
-                elif heuristic == "3":
-                    successor_node.f = successor_node.g + h3(successor_state)
+            successor_id = (successor_state.player_pos, tuple(successor_state.boxes))
+            successor_node = Node(successor_state, parent=current_node, action=action)
+            successor_node.g = current_node.g + 1
+
+            if heuristic == "1":
+                successor_node.f = successor_node.g + h1(successor_state)
+            elif heuristic == "2":
+                successor_node.f = successor_node.g + h2(successor_state)
+            elif heuristic == "3":
+                successor_node.f = successor_node.g + h3(successor_state)
+
+            #skip if this path is worse than one already processed
+            if successor_id in closed_dict and closed_dict[successor_id].f <= successor_node.f:
+                continue
+
+            #if this path is better or not in `open_dict`, add to Open
+            if successor_id not in open_dict or open_dict[successor_id].f > successor_node.f:
                 heappush(open_list, (successor_node.f, id(successor_node), successor_node))
-                visited.add(state_id)
-                print(f"Action: {action}, New Player Position: {successor_state.player_pos}, Boxes: {successor_state.boxes}, f: {successor_node.f}")
+                open_dict[successor_id] = successor_node
 
     print("No solution found.")
     return None, None
